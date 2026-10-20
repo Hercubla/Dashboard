@@ -374,4 +374,264 @@ async function toggleSupplement(suppId) {
 async function toggleHabit(habitId) {
   state.habits[habitId] = !state.habits[habitId];
   render();
-  await setHabitsStore(state.day, state.
+  await setHabitsStore(state.day, state.habits);
+}
+
+async function updateWorkout(exId, field, val) {
+  if (!state.workouts[exId]) state.workouts[exId] = { weight: "", reps: "" };
+  state.workouts[exId][field] = val;
+  await setWorkoutStore(state.day, state.workouts);
+}
+
+async function saveGoals() {
+  const cleaned = {};
+  NUTRIENTS.forEach(n => cleaned[n.key] = Number(state.goalDraft[n.key]) || 0);
+  state.goals = cleaned; state.showGoals = false;
+  await setGoalsStore(cleaned);
+  render();
+}
+
+async function saveBodyStat() {
+  const entry = {};
+  BODY_METRICS.forEach(m => entry[m.key] = state.bodyForm[m.key] === "" ? null : Number(state.bodyForm[m.key]));
+  state.bodySaving = true; render();
+  await setBodyLogEntry(state.day, entry);
+  state.bodyLog = await getBodyLog();
+  state.bodySaving = false; render();
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
+
+function render() {
+  const app = document.getElementById("app");
+  if (state.loading) { app.innerHTML = `<div style="text-align:center;padding:60px 0;">Loading Dashboard…</div>`; return; }
+
+  const t = totals();
+  const today = dateStr(new Date());
+  const grouped = MEALS.map(m => ({ meal: m, items: state.entries.filter(e => e.meal === m) }));
+  const weightPoints = state.bodyLog.filter(e => e.weight != null).slice(-10);
+  const weightVals = weightPoints.map(e => e.weight);
+  const maxW = weightVals.length ? Math.max(...weightVals) : 0;
+  const minW = weightVals.length ? Math.min(...weightVals) : 0;
+  const wRange = Math.max(1, maxW - minW);
+
+  const dayIndex = Math.abs(new Date(state.day).getTime() - new Date("2026-01-05").getTime()) / (1000 * 60 * 60 * 24) % 7;
+  const todaysWorkout = TRAINING_SPLIT[Math.floor(dayIndex) % 7];
+
+  app.innerHTML = `
+    <div style="text-align:center;margin-bottom:14px;">
+      <div class="oswald" style="font-size:13px;letter-spacing:.18em;color:var(--green);font-weight:700;">ALL-ENCOMPASSING LIFESTYLE DASHBOARD</div>
+      <div class="oswald" style="font-size:26px;font-weight:700;">Recomp & Daily Log</div>
+      <div class="mono" style="font-size:10px;color:#999;margin-top:2px;">${state.storageMode === "cloud" ? "☁ synced to account" : "saved on device"}</div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn ${state.activeTab==='nutrition'?'active':''}" onclick="setTab('nutrition')">Nutrition</button>
+      <button class="tab-btn ${state.activeTab==='training'?'active':''}" onclick="setTab('training')">Training</button>
+      <button class="tab-btn ${state.activeTab==='habits'?'active':''}" onclick="setTab('habits')">Habits</button>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <button class="navBtn" onclick="changeDay(-1)">&#8592;</button>
+      <div style="font-style:italic;font-size:15px;">${prettyDate(state.day)}</div>
+      <button class="navBtn" onclick="changeDay(1)" ${state.day >= today ? "disabled" : ""}>&#8594;</button>
+    </div>
+
+    ${state.activeTab === 'nutrition' ? `
+      <div class="panel" style="border-width:3px;border-color:var(--ink);">
+        <div style="border-bottom:10px solid var(--ink);padding-bottom:6px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:baseline;">
+          <span class="oswald" style="font-size:22px;font-weight:700;">Energy</span>
+          <span class="oswald" style="font-size:24px;font-weight:700;">${Math.round(t.calories).toLocaleString()}<span style="font-size:12px;font-weight:500;color:#888;"> / ${state.goals.calories.toLocaleString()} kJ</span></span>
+        </div>
+        <div class="mono" style="font-size:10px;text-align:right;color:#888;margin-bottom:2px;">~${Math.round(t.calories / 4.184)} kcal consumed</div>${NUTRIENTS.slice(1).map(n => {
+          const val = t[n.key] || 0, goal = state.goals[n.key] || 1, pct = Math.round((val/goal)*100), color = statusColor(n.type, pct);
+          return `<div class="label-row" style="padding-left:${(n.indent||0)*14}px;font-weight:${n.indent?400:600};font-size:${n.indent?'13.5px':'14.5px'};">
+            <span>${n.label}</span>
+            <span class="mono" style="color:${color};font-weight:600;font-size:12.5px;">${Math.round(val*10)/10}${n.unit} · ${pct}%</span>
+          </div>`;
+        }).join("")}
+      </div>
+      ${state.saving ? `<div style="font-size:11px;color:#888;text-align:center;margin-top:6px;">saving…</div>` : ""}
+
+      <button class="linkBtn" onclick="toggleGoalsPanel()">&#9881; Edit daily goals ${state.showGoals ? "&#9650;" : "&#9660;"}</button>
+      ${state.showGoals ? `
+        <div class="panel">
+          <div class="grid2">
+            ${NUTRIENTS.map(n => `<label class="field">${n.label}${n.unit ? `(${n.unit})` : ""}
+              <input class="inputEl" type="number" value="${state.goalDraft[n.key]}" oninput="updateGoalDraft('${n.key}', this.value)">
+            </label>`).join("")}
+          </div>
+          <button class="primaryBtn" onclick="saveGoals()">Save goals</button>
+        </div>` : ""}
+
+      <div style="margin-top:22px;">
+        <div class="oswald" style="font-size:15px;font-weight:700;margin-bottom:8px;letter-spacing:.02em;">SUPPLEMENTS (QUICK ADD)</div>
+        <div class="panel">
+          ${SUPPLEMENTS.map(supp => {
+            const checked = state.entries.some(e => e.id === supp.id);
+            return `<label style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14px;">
+              <input type="checkbox" ${checked ? "checked" : ""} onchange="toggleSupplement('${supp.id}')">
+              ${supp.label}
+              ${checked ? `<span style="margin-left:auto;font-size:11px;color:var(--green);">logged</span>` : ""}
+            </label>`;
+          }).join("")}
+        </div>
+      </div>
+
+      <div style="margin-top:22px;">
+        <div class="oswald" style="font-size:15px;font-weight:700;margin-bottom:8px;letter-spacing:.02em;">LOG FOOD</div>
+        <div class="panel">
+          <div style="display:flex;gap:8px;margin-bottom:8px;">
+            <select class="inputEl" style="flex:0 0 110px;" onchange="updateForm('meal', this.value)">
+              ${MEALS.filter(m => m !== "Supplements").map(m => `<option ${state.form.meal===m?"selected":""}>${m}</option>`).join("")}
+            </select>
+            <input class="inputEl" style="flex:1;" placeholder="Food name" value="${esc(state.form.name)}" oninput="updateForm('name', this.value)">
+          </div>
+          <div class="grid2">
+            ${NUTRIENTS.filter(n => n.core).map(n => `<label class="field">${n.label} ${n.unit?`(${n.unit})`:""}
+              <input class="inputEl" type="number" placeholder="0" value="${state.form[n.key]}" oninput="updateForm('${n.key}', this.value)">
+            </label>`).join("")}
+          </div>
+          <button class="linkBtn" style="margin-bottom:0;" onclick="toggleShowMore()">${state.showMore ? "Hide" : "More nutrients (micros)"} ${state.showMore ? "&#9650;" : "&#9660;"}</button>
+          ${state.showMore ? `<div class="grid2" style="margin-top:8px;">
+            ${NUTRIENTS.filter(n => !n.core).map(n => `<label class="field">${n.label}${n.unit?`(${n.unit})`:""}
+              <input class="inputEl" type="number" placeholder="0" value="${state.form[n.key]}" oninput="updateForm('${n.key}', this.value)">
+            </label>`).join("")}
+          </div>` : ""}
+          <button class="primaryBtn" onclick="addEntry()">+ Add to log</button>
+        </div>
+      </div>
+
+      <div style="margin-top:22px;">
+        <div class="oswald" style="font-size:15px;font-weight:700;margin-bottom:8px;letter-spacing:.02em;">TODAY'S ENTRIES</div>
+        ${state.entries.length===0 ? `<div style="font-size:13px;color:#888;font-style:italic;padding:8px 0;">Nothing logged yet — add your first item above.</div>` : ""}
+        ${grouped.filter(g=>g.items.length).map(g => `
+          <div style="margin-bottom:14px;">
+            <div class="mono" style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:4px;">${g.meal.toUpperCase()}</div>
+            ${g.items.map(item => `
+              <div class="food-row">
+                <div>
+                  <div style="font-size:14px;">${esc(item.name)}</div>
+                  <div class="mono" style="font-size:11px;color:#888;">${Math.round(item.calories) \vert{}\vert{} 0} kJ &middot; P${item.protein || 0}g &middot; C ${item.totalCarb \vert{}\vert{} 0}g &middot; F${item.totalFat || 0}g</div>
+                </div>
+                <button class="trash" onclick="removeEntry(${item.id})">&#128465;</button>
+              </div>`).join("")}
+          </div>`).join("")}
+      </div>
+
+      <div style="margin-top:22px;">
+        <div class="oswald" style="font-size:15px;font-weight:700;margin-bottom:8px;letter-spacing:.02em;">BODY PROGRESS</div>
+        <div class="panel">
+          <div class="grid2">
+            ${BODY_METRICS.map(m => `<label class="field">${m.label} (${m.unit})
+              <input class="inputEl" type="number" placeholder="0" value="${state.bodyForm[m.key]}" oninput="updateBodyForm('${m.key}', this.value)">
+            </label>`).join("")}
+          </div>
+          <button class="primaryBtn" onclick="saveBodyStat()">${state.bodySaving ? "Saving…" : `Save stats for ${prettyDate(state.day)}`}</button>
+        </div>
+        ${weightPoints.length>1 ? `
+          <div style="margin-top:10px;">
+            <div class="mono" style="font-size:11px;color:#888;margin-bottom:4px;">WEIGHT TREND (kg)</div>
+            <div class="bar-chart">
+              ${weightPoints.map(e => `
+                <div class="bar-col">
+                  <div class="mono" style="font-size:9px;color:var(--ink);margin-bottom:2px;">${e.weight}</div>
+                  <div style="width:60%;background:${e.date===state.day?"var(--green)":"#c9c4b4"};height:${Math.max(6,((e.weight-minW)/wRange)*100)}%;"></div>
+                  <div class="mono" style="font-size:9px;color:#888;margin-top:3px;">${e.date.slice(5)}</div>
+                </div>`).join("")}
+            </div>
+          </div>` : ""}
+      </div>
+
+    ` : state.activeTab === 'training' ? `
+      <div style="margin-bottom:14px;">
+        <div class="oswald" style="font-size:15px;font-weight:700;color:var(--green);">SCHEDULED SESSION FOR THIS DAY</div>
+        <div style="font-size:13px;color:#888;">Alternating 3x Resistance & 3x Cardio Protocol</div>
+      </div>
+
+      <div class="panel workout-card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:8px;">
+          <span class="oswald" style="font-size:18px;font-weight:700;">${todaysWorkout.type.toUpperCase()}:${todaysWorkout.focus}</span>
+          <span class="mono" style="font-size:12px;background:var(--paper);padding:2px 6px;border-radius:4px;">⏱ ${todaysWorkout.duration}</span>
+        </div>
+        
+        ${todaysWorkout.exercises ? `
+          <div style="margin-top:10px;">
+            <div class="mono" style="font-size:11px;color:#888;margin-bottom:6px;">EXERCISE / LOG WEIGHT & REPS</div>
+            ${todaysWorkout.exercises.map(ex => {
+              const wData = state.workouts[ex.id] || { weight: "", reps: "" };
+              return `
+              <div class="exercise-item">
+                <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px;">
+                  <span><strong>${ex.name}</strong></span>
+                  <span class="mono" style="color:var(--green);">${ex.sets} ·${ex.reps}</span>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <input class="inputEl" style="margin-top:0;" type="number" placeholder="Weight (kg)" value="${wData.weight}" oninput="updateWorkout('${ex.id}', 'weight', this.value)">
+                  <input class="inputEl" style="margin-top:0;" type="text" placeholder="Reps (e.g. 8,8,7)" value="${wData.reps}" oninput="updateWorkout('${ex.id}', 'reps', this.value)">
+                </div>
+              </div>`;
+            }).join("")}
+          </div>` : `
+          <div style="font-size:13.5px;color:var(--ink);padding:8px 0;line-height:1.5;">
+            ${todaysWorkout.description}
+          </div>`}
+      </div>
+
+      <div style="margin-top:22px;">
+        <div class="oswald" style="font-size:15px;font-weight:700;margin-bottom:8px;">Full 7-Day Split Overview</div>
+        ${TRAINING_SPLIT.map((s, idx) => `
+          <div class="panel" style="margin-bottom:6px; opacity:${Math.floor(dayIndex)%7 === idx ? '1' : '0.7'}; border-left:3px solid ${Math.floor(dayIndex)%7 === idx ? 'var(--green)' : 'var(--border)'}">
+            <div style="display:flex;justify-content:space-between;font-size:13px;">
+              <strong class="oswald">${s.dayName} (${s.type})</strong>
+              <span class="mono" style="font-size:11px;color:#888;">${s.duration}</span>
+            </div>
+            <div style="font-size:12px;color:#666;margin-top:2px;">${s.focus}</div>
+          </div>`).join("")}
+      </div>
+
+    ` : `
+      <div style="margin-bottom:14px;">
+        <div class="oswald" style="font-size:15px;font-weight:700;color:var(--green);">DAILY LIFESTYLE HABITS</div>
+        <div style="font-size:13px;color:#888;">Check off items to drive recovery, hydration, and adherence.</div>
+      </div>
+
+      <div class="panel">
+        ${DEFAULT_HABITS.map(habit => {
+          const checked = !!state.habits[habit.id];
+          return `<label style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14.5px;font-weight:600;">
+            <input type="checkbox" ${checked ? "checked" : ""} onchange="toggleHabit('${habit.id}')">
+            <span style="${checked ? 'text-decoration:line-through;color:#888;' : ''}">${habit.label}</span>
+            ${checked ? `<span style="margin-left:auto;font-size:11px;color:var(--green);font-family:'IBM Plex Mono';">COMPLETED</span>` : ""}
+          </label>`;
+        }).join("")}
+      </div>
+    `}
+  `;
+}
+
+function updateForm(key, val) { state.form[key] = val; }
+function updateGoalDraft(key, val) { state.goalDraft[key] = val; }
+function updateBodyForm(key, val) { state.bodyForm[key] = val; }
+function toggleShowMore() { state.showMore = !state.showMore; render(); }
+function toggleGoalsPanel() { state.showGoals = !state.showGoals; render(); }
+
+window.changeDay = changeDay;
+window.setTab = setTab;
+window.addEntry = addEntry;
+window.removeEntry = removeEntry;
+window.toggleSupplement = toggleSupplement;
+window.toggleHabit = toggleHabit;
+window.updateWorkout = updateWorkout;
+window.saveGoals = saveGoals;
+window.saveBodyStat = saveBodyStat;
+window.updateForm = updateForm;
+window.updateGoalDraft = updateGoalDraft;
+window.updateBodyForm = updateBodyForm;
+window.toggleShowMore = toggleShowMore;
+window.toggleGoalsPanel = toggleGoalsPanel;
+
+loadAll();
+</script>
+</body>
+</html>
