@@ -5,66 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lifestyle & Nutrition Dashboard</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap');
 
+:root {
+  --paper: #F5F5F0;
+  --ink: #14181A;
+  --green: #2F6B3C;
+  --amber: #B8842E;
+  --plum: #8B3A50;
+  --panel: #ffffff;
+  --border: #ddd;
+  --input-bg: #FAFAF6;
+}
+@media (prefers-color-scheme: dark) {
   :root {
-    --paper: #F5F5F0;
-    --ink: #14181A;
-    --green: #2F6B3C;
-    --amber: #B8842E;
-    --plum: #8B3A50;
-    --panel: #ffffff;
-    --border: #ddd;
-    --input-bg: #FAFAF6;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #17191A; --ink: #EDEDE8; --panel: #23262A; --border: #3a3d3f; --input-bg: #1c1e20;
-    }
-  }
-  :root[data-theme="dark"] {
     --paper: #17191A; --ink: #EDEDE8; --panel: #23262A; --border: #3a3d3f; --input-bg: #1c1e20;
   }
-  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--paper); color: var(--ink);
-    font-family: 'Lora', serif; min-height: 100%;
-  }
-  .oswald { font-family: 'Oswald', sans-serif; }
-  .mono { font-family: 'IBM Plex Mono', monospace; }
-  .wrap { max-width: 480px; margin: 0 auto; padding: 20px 16px 60px; }
-  
-  /* Tab Navigation Styling */
-  .tab-bar { display: flex; gap: 4px; background: var(--border); padding: 4px; border-radius: 8px; margin-bottom: 18px; }
-  .tab-btn { flex: 1; background: var(--panel); border: none; border-radius: 6px; padding: 8px 4px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 500; color: var(--ink); cursor: pointer; text-align: center; }
-  .tab-btn.active { background: var(--ink); color: var(--paper); font-weight: 700; }
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: 'Lora', serif;
+}
+.oswald { font-family: 'Oswald', sans-serif; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+.wrap { max-width: 480px; margin: 0 auto; padding: 20px 16px 60px; }
 
-  .navBtn { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; cursor: pointer; color: var(--ink); }
-  .navBtn:disabled { opacity: 0.3; cursor: default; }
-  .linkBtn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: var(--green); font-size: 12.5px; font-weight: 600; cursor: pointer; padding: 8px 0; margin: 10px 0 4px; }
-  .panel { background: var(--panel); border: 1px solid var(--border); padding: 12px; margin-bottom: 4px; border-radius: 6px; }
-  .inputEl { width: 100%; box-sizing: border-box; border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; font-size: 13px; margin-top: 3px; font-family: 'Lora', serif; background: var(--input-bg); color: var(--ink); }
-  .primaryBtn { width: 100%; margin-top: 10px; background: var(--ink); color: var(--paper); border: none; border-radius: 6px; padding: 10px 0; font-size: 13.5px; font-weight: 600; cursor: pointer; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  label.field { font-size: 11.5px; color: #777; display: block; }
-  .label-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
-  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 90px; background: var(--panel); border: 1px solid var(--border); padding: 10px 10px 6px; border-radius: 6px; }
-  .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
-  input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--green); cursor: pointer; }
-  .food-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding: 6px 0; }
-  .trash { background: none; border: none; color: var(--plum); cursor: pointer; padding: 6px; }
-  
-  .workout-card { border-left: 4px solid var(--green); margin-bottom: 12px; }
-  .exercise-item { padding: 8px 0; border-bottom: 1px dashed var(--border); }
+.tab-bar { display: flex; gap: 4px; background: var(--border); padding: 4px; border-radius: 8px; margin-bottom: 18px; }
+.tab-btn { flex: 1; background: var(--panel); border: none; border-radius: 6px; padding: 8px 4px; font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 500; color: var(--ink); cursor: pointer; text-align: center; }
+.tab-btn.active { background: var(--ink); color: var(--paper); font-weight: 700; }
+
+.navBtn { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; cursor: pointer; color: var(--ink); }
+.navBtn:disabled { opacity: 0.3; cursor: default; }
+.linkBtn { display: flex; align-items: center; gap: 4px; background: none; border: none; color: var(--green); font-size: 12.5px; font-weight: 600; cursor: pointer; padding: 8px 0; margin: 10px 0 4px; }
+.panel { background: var(--panel); border: 1px solid var(--border); padding: 12px; margin-bottom: 4px; border-radius: 6px; }
+.inputEl { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 6px 8px; font-size: 13px; margin-top: 3px; font-family: 'Lora', serif; background: var(--input-bg); color: var(--ink); }
+.primaryBtn { width: 100%; margin-top: 10px; background: var(--ink); color: var(--paper); border: none; border-radius: 6px; padding: 10px 0; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+label.field { font-size: 11.5px; color: #777; display: block; }
+.label-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 110px; background: var(--panel); border: 1px solid var(--border); padding: 10px 10px 6px; border-radius: 6px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--green); cursor: pointer; }
+.food-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding: 6px 0; }
+.trash { background: none; border: none; color: var(--plum); cursor: pointer; padding: 6px; }
+
+.workout-card { border-left: 4px solid var(--green); margin-bottom: 12px; }
+.exercise-item { display: flex; justify-content: space-between; gap: 8px; font-size: 13.5px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
 </style>
 </head>
 <body>
-<div id="app" class="wrap"><div style="text-align:center;padding:60px 0;">Loading Dashboard…</div></div>
+
+<div id="app" class="wrap">
+  <div style="text-align:center;padding:60px 0;">Loading Dashboard…</div>
+</div>
 
 <script>
+// If anything goes wrong, show the error instead of a blank page
+window.addEventListener("error", function (e) {
+  var app = document.getElementById("app");
+  if (app) app.innerHTML = '<div style="padding:40px 0;color:#8B3A50;font-family:monospace;font-size:13px;">Error: ' + e.message + ' (line ' + e.lineno + ')</div>';
+});
+
 const NUTRIENTS = [
   { key: "calories", label: "Energy", unit: "kJ", type: "neutral", core: true },
   { key: "protein", label: "Protein", unit: "g", type: "min", core: true },
@@ -108,30 +111,30 @@ const BODY_METRICS = [
 
 const TRAINING_SPLIT = [
   { dayName: "Day 1", type: "Resistance", focus: "Upper Body (Strength & Hypertrophy)", duration: "60 min", exercises: [
-    { id: "ex1_1", name: "Barbell Bench Press", sets: "3 sets", reps: "6–8 reps" },
-    { id: "ex1_2", name: "Barbell Row or Chest-Supported Row", sets: "3 sets", reps: "8–10 reps" },
-    { id: "ex1_3", name: "Overhead Barbell / Dumbbell Press", sets: "3 sets", reps: "8–10 reps" },
-    { id: "ex1_4", name: "Lat Pulldown or Pull-ups", sets: "3 sets", reps: "8–12 reps" },
-    { id: "ex1_5", name: "Dumbbell Lateral Raises", sets: "3 sets", reps: "12–15 reps" },
-    { id: "ex1_6", name: "Bicep Curls superset Tricep Pushdowns", sets: "3 sets", reps: "10–12 reps" }
+    { name: "Barbell Bench Press", sets: "3 sets", reps: "6–8 reps" },
+    { name: "Barbell Row or Chest-Supported Row", sets: "3 sets", reps: "8–10 reps" },
+    { name: "Overhead Barbell / Dumbbell Press", sets: "3 sets", reps: "8–10 reps" },
+    { name: "Lat Pulldown or Pull-ups", sets: "3 sets", reps: "8–12 reps" },
+    { name: "Dumbbell Lateral Raises", sets: "3 sets", reps: "12–15 reps" },
+    { name: "Bicep Curls superset Tricep Pushdowns", sets: "3 sets", reps: "10–12 reps" }
   ]},
   { dayName: "Day 2", type: "Cardio", focus: "Endurance & Fat Oxidation", duration: "60–75 min", description: "Steady-State Zone 2 Cardio (Incline Treadmill Walk, Stationary Bike, or Rower maintaining 60-70% max heart rate)." },
   { dayName: "Day 3", type: "Resistance", focus: "Lower Body (Posterior Chain & Quads)", duration: "60 min", exercises: [
-    { id: "ex3_1", name: "Barbell Back Squat or Leg Press", sets: "3 sets", reps: "6–8 reps" },
-    { id: "ex3_2", name: "Romanian Deadlifts (RDLs)", sets: "3 sets", reps: "8–10 reps" },
-    { id: "ex3_3", name: "Bulgarian Split Squats", sets: "2 sets", reps: "10–12 reps/leg" },
-    { id: "ex3_4", name: "Seated Leg Curls", sets: "3 sets", reps: "10–12 reps" },
-    { id: "ex3_5", name: "Standing Calf Raises", sets: "4 sets", reps: "12–15 reps" },
-    { id: "ex3_6", name: "Weighted Planks / Core Circuit", sets: "3 sets", reps: "45–60 sec" }
+    { name: "Barbell Back Squat or Leg Press", sets: "3 sets", reps: "6–8 reps" },
+    { name: "Romanian Deadlifts (RDLs)", sets: "3 sets", reps: "8–10 reps" },
+    { name: "Bulgarian Split Squats", sets: "2 sets", reps: "10–12 reps/leg" },
+    { name: "Seated Leg Curls", sets: "3 sets", reps: "10–12 reps" },
+    { name: "Standing Calf Raises", sets: "4 sets", reps: "12–15 reps" },
+    { name: "Weighted Planks / Core Circuit", sets: "3 sets", reps: "45–60 sec" }
   ]},
   { dayName: "Day 4", type: "Cardio", focus: "Cardiovascular Conditioning", duration: "60–75 min", description: "Steady-State Zone 2 Cardio (Low impact sustained pace to support recovery and caloric expenditure)." },
   { dayName: "Day 5", type: "Resistance", focus: "Full Body Recomposition & Volume", duration: "60 min", exercises: [
-    { id: "ex5_1", name: "Incline Dumbbell Press", sets: "3 sets", reps: "8–10 reps" },
-    { id: "ex5_2", name: "Weighted Chin-ups or Neutral Grip Pulldowns", sets: "3 sets", reps: "8–10 reps" },
-    { id: "ex5_3", name: "Trap Bar Deadlift or Goblet Squat", sets: "3 sets", reps: "8–10 reps" },
-    { id: "ex5_4", name: "Dumbbell Shoulder Press", sets: "3 sets", reps: "10–12 reps" },
-    { id: "ex5_5", name: "Hamstring Curls & Leg Extensions", sets: "3 sets", reps: "12–15 reps" },
-    { id: "ex5_6", name: "Cable Curls & Overhead Tricep Extensions", sets: "3 sets", reps: "12–15 reps" }
+    { name: "Incline Dumbbell Press", sets: "3 sets", reps: "8–10 reps" },
+    { name: "Weighted Chin-ups or Neutral Grip Pulldowns", sets: "3 sets", reps: "8–10 reps" },
+    { name: "Trap Bar Deadlift or Goblet Squat", sets: "3 sets", reps: "8–10 reps" },
+    { name: "Dumbbell Shoulder Press", sets: "3 sets", reps: "10–12 reps" },
+    { name: "Hamstring Curls & Leg Extensions", sets: "3 sets", reps: "12–15 reps" },
+    { name: "Cable Curls & Overhead Tricep Extensions", sets: "3 sets", reps: "12–15 reps" }
   ]},
   { dayName: "Day 6", type: "Cardio", focus: "Aerobic Base & Recovery", duration: "60–75 min", description: "Steady-State Zone 2 Cardio (Outdoor brisk walk or light cycle to wrap up the active week)." },
   { dayName: "Day 7", type: "Rest", focus: "Full Recovery & Muscle Repair", duration: "0 min", description: "Complete rest day, focus on hydration, high protein, and daily mobility stretching." }
@@ -145,15 +148,16 @@ const DEFAULT_HABITS = [
   { id: "protein_target", label: "Hit Daily Protein Target" }
 ];
 
+/* ---------- Helpers ---------- */
 function dateStr(d) {
-  const y = d.getFullYear(), m = String(d.getMonth()+1).padStart(2,"0"), day = String(d.getDate()).padStart(2,"0");
+  const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, "0"), day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
 function prettyDate(str) {
-  return new Date(str+"T00:00:00").toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+  return new Date(str + "T00:00:00").toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
 }
 function shiftDate(str, delta) {
-  const d = new Date(str+"T00:00:00"); d.setDate(d.getDate()+delta); return dateStr(d);
+  const d = new Date(str + "T00:00:00"); d.setDate(d.getDate() + delta); return dateStr(d);
 }
 function statusColor(type, pct) {
   if (type === "neutral") return "var(--ink)";
@@ -162,250 +166,140 @@ function statusColor(type, pct) {
 }
 function emptyEntryForm() { const e = { meal: "Breakfast", name: "" }; NUTRIENTS.forEach(n => e[n.key] = ""); return e; }
 function emptyBodyForm() { const f = {}; BODY_METRICS.forEach(m => f[m.key] = ""); return f; }
+function esc(s) { const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
 
-let dbApi = null;
-let dbReady = false;
-
-async function initStorage() {
+/* ---------- Storage (localStorage with in-memory fallback) ---------- */
+const memStore = {};
+function storeGet(key, fallback) {
   try {
-    const claudeDb = await (window.claude && window.claude.use ? window.claude.use("db") : Promise.resolve(null));
-    if (claudeDb) { dbApi = claudeDb; dbReady = true; }
-  } catch (e) { dbReady = false; }
-}
-
-async function getGoals() {
-  if (dbApi) {
-    try {
-      const snap = await dbApi.doc("settings/goals").get();
-      if (snap.exists) return snap.data();
-      await dbApi.doc("settings/goals").set(DEFAULT_GOALS);
-      return DEFAULT_GOALS;
-    } catch (e) {}
-  }
-  try {
-    const raw = localStorage.getItem("nt-goals");
-    if (raw) return JSON.parse(raw);
-    localStorage.setItem("nt-goals", JSON.stringify(DEFAULT_GOALS));
+    const raw = localStorage.getItem(key);
+    if (raw !== null) return JSON.parse(raw);
   } catch (e) {}
-  return DEFAULT_GOALS;
+  return key in memStore ? memStore[key] : fallback;
+}
+function storeSet(key, value) {
+  memStore[key] = value;
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
 }
 
-async function setGoalsStore(goals) {
-  if (dbApi) {
-    try { await dbApi.doc("settings/goals").set(goals); return; } catch (e) {}
-  }
-  try { localStorage.setItem("nt-goals", JSON.stringify(goals)); } catch (e) {}
+const getGoals = () => ({ ...DEFAULT_GOALS, ...storeGet("nt-goals", {}) });
+const setGoalsStore = goals => storeSet("nt-goals", goals);
+const getLog = day => storeGet("nt-log-" + day, []);
+const setLogStore = (day, entries) => storeSet("nt-log-" + day, entries);
+const getBodyLog = () => storeGet("nt-bodylog", []);
+const getHabits = day => storeGet("nt-habits-" + day, {});
+const setHabitsStore = (day, habits) => storeSet("nt-habits-" + day, habits);
+
+function setBodyLogEntry(day, data) {
+  const next = [...getBodyLog().filter(e => e.date !== day), { date: day, ...data }]
+    .sort((a, b) => a.date.localeCompare(b.date));
+  storeSet("nt-bodylog", next);
 }
 
-async function getLog(day) {
-  if (dbApi) {
-    try {
-      const snap = await dbApi.collection("logs").doc(day).get();
-      return snap.exists ? (snap.data().entries || []) : [];
-    } catch (e) {}
-  }
-  try {
-    const raw = localStorage.getItem("nt-log-" + day);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) { return []; }
-}
-
-async function setLogStore(day, entries) {
-  if (dbApi) {
-    try { await dbApi.collection("logs").doc(day).set({ date: day, entries }); return; } catch (e) {}
-  }
-  try { localStorage.setItem("nt-log-" + day, JSON.stringify(entries)); } catch (e) {}
-}
-
-async function getHistory() {
-  if (dbApi) {
-    try {
-      const snap = await dbApi.collection("logs").get();
-      const rows = snap.docs.slice(-7).map(d => {
-        const entries = d.data().entries || [];
-        const cals = entries.reduce((s, e) => s + (Number(e.calories) || 0), 0);
-        return { date: d.id, calories: cals };
-      });
-      return rows;
-    } catch (e) {}
-  }
-  try {
-    const keys = Object.keys(localStorage).filter(k => k.startsWith("nt-log-")).sort().slice(-7);
-    return keys.map(k => {
-      const entries = JSON.parse(localStorage.getItem(k) || "[]");
-      const cals = entries.reduce((s, e) => s + (Number(e.calories) || 0), 0);
-      return { date: k.replace("nt-log-", ""), calories: cals };
-    });
-  } catch (e) { return []; }
-}
-
-async function getBodyLog() {
-  if (dbApi) {
-    try {
-      const snap = await dbApi.collection("bodylog").get();
-      return snap.docs.map(d => ({ date: d.id, ...d.data() }));
-    } catch (e) {}
-  }
-  try {
-    const raw = localStorage.getItem("nt-bodylog");
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) { return []; }
-}
-
-async function setBodyLogEntry(day, data) {
-  if (dbApi) {
-    try { await dbApi.collection("bodylog").doc(day).set({ date: day, ...data }); return; } catch (e) {}
-  }
-  try {
-    const all = await getBodyLog();
-    const next = [...all.filter(e => e.date !== day), { date: day, ...data }].sort((a,b) => a.date.localeCompare(b.date));
-    localStorage.setItem("nt-bodylog", JSON.stringify(next));
-  } catch (e) {}
-}
-
-async function getHabits(day) {
-  try {
-    const raw = localStorage.getItem("nt-habits-" + day);
-    return raw ? JSON.parse(raw) : {};
-  } catch (e) { return {}; }
-}
-
-async function setHabitsStore(day, habits) {
-  try { localStorage.setItem("nt-habits-" + day, JSON.stringify(habits)); } catch (e) {}
-}
-
-async function getWorkouts(day) {
-  try {
-    const raw = localStorage.getItem("nt-workout-" + day);
-    return raw ? JSON.parse(raw) : {};
-  } catch (e) { return {}; }
-}
-
-async function setWorkoutStore(day, workouts) {
-  try { localStorage.setItem("nt-workout-" + day, JSON.stringify(workouts)); } catch (e) {}
-}
-
+/* ---------- State ---------- */
 const state = {
-  loading: true,
   activeTab: "nutrition",
-  goals: DEFAULT_GOALS,
-  goalDraft: DEFAULT_GOALS,
+  goals: getGoals(),
+  goalDraft: getGoals(),
   day: dateStr(new Date()),
   entries: [],
   form: emptyEntryForm(),
   showMore: false,
   showGoals: false,
-  history: [],
-  saving: false,
   bodyLog: [],
   bodyForm: emptyBodyForm(),
-  bodySaving: false,
   habits: {},
-  workouts: {},
-  storageMode: "checking",
 };
 
-async function loadAll() {
-  state.loading = true; render();
-  await initStorage();
-  state.storageMode = dbApi ? "cloud" : "device";
-  const [goals, entries, history, bodyLog, habits, workouts] = await Promise.all([
-    getGoals(), getLog(state.day), getHistory(), getBodyLog(), getHabits(state.day), getWorkouts(state.day)
-  ]);
-  state.goals = goals; state.goalDraft = goals; state.entries = entries; state.history = history; state.bodyLog = bodyLog; state.habits = habits; state.workouts = workouts;
-  const existing = bodyLog.find(e => e.date === state.day);
-  state.bodyForm = existing ? Object.fromEntries(BODY_METRICS.map(m => [m.key, existing[m.key] ?? ""])) : emptyBodyForm();
-  state.loading = false;
-  render();
-}
-
-async function changeDay(delta) {
-  state.day = shiftDate(state.day, delta);
-  state.loading = true; render();
-  state.entries = await getLog(state.day);
-  state.habits = await getHabits(state.day);
-  state.workouts = await getWorkouts(state.day);
+function loadDay() {
+  state.entries = getLog(state.day);
+  state.habits = getHabits(state.day);
+  state.bodyLog = getBodyLog();
   const existing = state.bodyLog.find(e => e.date === state.day);
-  state.bodyForm = existing ? Object.fromEntries(BODY_METRICS.map(m => [m.key, existing[m.key] ?? ""])) : emptyBodyForm();
-  state.loading = false;
+  state.bodyForm = existing
+    ? Object.fromEntries(BODY_METRICS.map(m => [m.key, existing[m.key] ?? ""]))
+    : emptyBodyForm();
+}
+
+function changeDay(delta) {
+  state.day = shiftDate(state.day, delta);
+  loadDay();
   render();
 }
 
-function setTab(tab) {
-  state.activeTab = tab;
-  render();
-}
+function setTab(tab) { state.activeTab = tab; render(); }
 
 function totals() {
   const t = {};
-  NUTRIENTS.forEach(n => { t[n.key] = state.entries.reduce((s,e) => s + (Number(e[n.key]) || 0), 0); });
+  NUTRIENTS.forEach(n => { t[n.key] = state.entries.reduce((s, e) => s + (Number(e[n.key]) || 0), 0); });
   return t;
 }
 
-async function saveEntries(next) {
+function saveEntries(next) {
   state.entries = next;
-  state.saving = true; render();
-  await setLogStore(state.day, next);
-  state.history = await getHistory();
-  state.saving = false; render();
+  setLogStore(state.day, next);
+  render();
 }
 
-async function addEntry() {
+function addEntry() {
   if (!state.form.name.trim()) return;
   const next = [...state.entries, { ...state.form, id: Date.now() }];
   state.form = emptyEntryForm(); state.showMore = false;
-  await saveEntries(next);
+  saveEntries(next);
 }
 
-async function removeEntry(id) {
-  await saveEntries(state.entries.filter(e => e.id !== id));
+function removeEntry(id) {
+  saveEntries(state.entries.filter(e => String(e.id) !== String(id)));
 }
 
-async function toggleSupplement(suppId) {
+function toggleSupplement(suppId) {
   const supp = SUPPLEMENTS.find(s => s.id === suppId);
   const already = state.entries.some(e => e.id === suppId);
   if (already) {
-    await saveEntries(state.entries.filter(e => e.id !== suppId));
+    saveEntries(state.entries.filter(e => e.id !== suppId));
   } else {
-    await saveEntries([...state.entries, { id: supp.id, meal: "Supplements", name: supp.label, ...supp.data }]);
+    saveEntries([...state.entries, { id: supp.id, meal: "Supplements", name: supp.label, ...supp.data }]);
   }
 }
 
-async function toggleHabit(habitId) {
+function toggleHabit(habitId) {
   state.habits[habitId] = !state.habits[habitId];
+  setHabitsStore(state.day, state.habits);
   render();
-  await setHabitsStore(state.day, state.habits);
 }
 
-async function updateWorkout(exId, field, val) {
-  if (!state.workouts[exId]) state.workouts[exId] = { weight: "", reps: "" };
-  state.workouts[exId][field] = val;
-  await setWorkoutStore(state.day, state.workouts);
-}
-
-async function saveGoals() {
+function saveGoals() {
   const cleaned = {};
   NUTRIENTS.forEach(n => cleaned[n.key] = Number(state.goalDraft[n.key]) || 0);
-  state.goals = cleaned; state.showGoals = false;
-  await setGoalsStore(cleaned);
+  state.goals = cleaned; state.goalDraft = cleaned; state.showGoals = false;
+  setGoalsStore(cleaned);
   render();
 }
 
-async function saveBodyStat() {
+function saveBodyStat() {
   const entry = {};
   BODY_METRICS.forEach(m => entry[m.key] = state.bodyForm[m.key] === "" ? null : Number(state.bodyForm[m.key]));
-  state.bodySaving = true; render();
-  await setBodyLogEntry(state.day, entry);
-  state.bodyLog = await getBodyLog();
-  state.bodySaving = false; render();
+  setBodyLogEntry(state.day, entry);
+  state.bodyLog = getBodyLog();
+  render();
 }
 
-function esc(s) { const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
+function updateForm(key, val) { state.form[key] = val; }
+function updateGoalDraft(key, val) { state.goalDraft[key] = val; }
+function updateBodyForm(key, val) { state.bodyForm[key] = val; }
+function toggleShowMore() { state.showMore = !state.showMore; render(); }
+function toggleGoalsPanel() { state.showGoals = !state.showGoals; render(); }
+
+/* ---------- Render ---------- */
+function workoutIndex() {
+  const base = new Date("2026-01-05T00:00:00");
+  const cur = new Date(state.day + "T00:00:00");
+  const diff = Math.round((cur - base) / 86400000);
+  return ((diff % 7) + 7) % 7;
+}
 
 function render() {
   const app = document.getElementById("app");
-  if (state.loading) { app.innerHTML = `<div style="text-align:center;padding:60px 0;">Loading Dashboard…</div>`; return; }
-
   const t = totals();
   const today = dateStr(new Date());
   const grouped = MEALS.map(m => ({ meal: m, items: state.entries.filter(e => e.meal === m) }));
@@ -415,20 +309,20 @@ function render() {
   const minW = weightVals.length ? Math.min(...weightVals) : 0;
   const wRange = Math.max(1, maxW - minW);
 
-  const dayIndex = Math.abs(new Date(state.day).getTime() - new Date("2026-01-05").getTime()) / (1000 * 60 * 60 * 24) % 7;
-  const todaysWorkout = TRAINING_SPLIT[Math.floor(dayIndex) % 7];
+  const wIdx = workoutIndex();
+  const todaysWorkout = TRAINING_SPLIT[wIdx];
 
   app.innerHTML = `
     <div style="text-align:center;margin-bottom:14px;">
       <div class="oswald" style="font-size:13px;letter-spacing:.18em;color:var(--green);font-weight:700;">ALL-ENCOMPASSING LIFESTYLE DASHBOARD</div>
       <div class="oswald" style="font-size:26px;font-weight:700;">Recomp & Daily Log</div>
-      <div class="mono" style="font-size:10px;color:#999;margin-top:2px;">${state.storageMode === "cloud" ? "☁ synced to account" : "saved on device"}</div>
+      <div class="mono" style="font-size:10px;color:#999;margin-top:2px;">saved on device</div>
     </div>
 
     <div class="tab-bar">
-      <button class="tab-btn ${state.activeTab==='nutrition'?'active':''}" onclick="setTab('nutrition')">Nutrition</button>
-      <button class="tab-btn ${state.activeTab==='training'?'active':''}" onclick="setTab('training')">Training</button>
-      <button class="tab-btn ${state.activeTab==='habits'?'active':''}" onclick="setTab('habits')">Habits</button>
+      <button class="tab-btn ${state.activeTab === 'nutrition' ? 'active' : ''}" onclick="setTab('nutrition')">Nutrition</button>
+      <button class="tab-btn ${state.activeTab === 'training' ? 'active' : ''}" onclick="setTab('training')">Training</button>
+      <button class="tab-btn ${state.activeTab === 'habits' ? 'active' : ''}" onclick="setTab('habits')">Habits</button>
     </div>
 
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
@@ -443,21 +337,21 @@ function render() {
           <span class="oswald" style="font-size:22px;font-weight:700;">Energy</span>
           <span class="oswald" style="font-size:24px;font-weight:700;">${Math.round(t.calories).toLocaleString()}<span style="font-size:12px;font-weight:500;color:#888;"> / ${state.goals.calories.toLocaleString()} kJ</span></span>
         </div>
-        <div class="mono" style="font-size:10px;text-align:right;color:#888;margin-bottom:2px;">~${Math.round(t.calories / 4.184)} kcal consumed</div>${NUTRIENTS.slice(1).map(n => {
-          const val = t[n.key] || 0, goal = state.goals[n.key] || 1, pct = Math.round((val/goal)*100), color = statusColor(n.type, pct);
-          return `<div class="label-row" style="padding-left:${(n.indent||0)*14}px;font-weight:${n.indent?400:600};font-size:${n.indent?'13.5px':'14.5px'};">
+        <div class="mono" style="font-size:10px;text-align:right;color:#888;margin-bottom:2px;">~${Math.round(t.calories / 4.184)} kcal consumed</div>
+        ${NUTRIENTS.slice(1).map(n => {
+          const val = t[n.key] || 0, goal = state.goals[n.key] || 1, pct = Math.round((val / goal) * 100), color = statusColor(n.type, pct);
+          return `<div class="label-row" style="padding-left:${(n.indent || 0) * 14}px;font-weight:${n.indent ? 400 : 600};font-size:${n.indent ? '13.5px' : '14.5px'};">
             <span>${n.label}</span>
-            <span class="mono" style="color:${color};font-weight:600;font-size:12.5px;">${Math.round(val*10)/10}${n.unit} · ${pct}%</span>
+            <span class="mono" style="color:${color};font-weight:600;font-size:12.5px;">${Math.round(val * 10) / 10}${n.unit} · ${pct}%</span>
           </div>`;
         }).join("")}
       </div>
-      ${state.saving ? `<div style="font-size:11px;color:#888;text-align:center;margin-top:6px;">saving…</div>` : ""}
 
       <button class="linkBtn" onclick="toggleGoalsPanel()">&#9881; Edit daily goals ${state.showGoals ? "&#9650;" : "&#9660;"}</button>
       ${state.showGoals ? `
         <div class="panel">
           <div class="grid2">
-            ${NUTRIENTS.map(n => `<label class="field">${n.label}${n.unit ? `(${n.unit})` : ""}
+            ${NUTRIENTS.map(n => `<label class="field">${n.label} (${n.unit})
               <input class="inputEl" type="number" value="${state.goalDraft[n.key]}" oninput="updateGoalDraft('${n.key}', this.value)">
             </label>`).join("")}
           </div>
@@ -483,18 +377,18 @@ function render() {
         <div class="panel">
           <div style="display:flex;gap:8px;margin-bottom:8px;">
             <select class="inputEl" style="flex:0 0 110px;" onchange="updateForm('meal', this.value)">
-              ${MEALS.filter(m => m !== "Supplements").map(m => `<option ${state.form.meal===m?"selected":""}>${m}</option>`).join("")}
+              ${MEALS.filter(m => m !== "Supplements").map(m => `<option ${state.form.meal === m ? "selected" : ""}>${m}</option>`).join("")}
             </select>
             <input class="inputEl" style="flex:1;" placeholder="Food name" value="${esc(state.form.name)}" oninput="updateForm('name', this.value)">
           </div>
           <div class="grid2">
-            ${NUTRIENTS.filter(n => n.core).map(n => `<label class="field">${n.label} ${n.unit?`(${n.unit})`:""}
+            ${NUTRIENTS.filter(n => n.core).map(n => `<label class="field">${n.label} (${n.unit})
               <input class="inputEl" type="number" placeholder="0" value="${state.form[n.key]}" oninput="updateForm('${n.key}', this.value)">
             </label>`).join("")}
           </div>
           <button class="linkBtn" style="margin-bottom:0;" onclick="toggleShowMore()">${state.showMore ? "Hide" : "More nutrients (micros)"} ${state.showMore ? "&#9650;" : "&#9660;"}</button>
           ${state.showMore ? `<div class="grid2" style="margin-top:8px;">
-            ${NUTRIENTS.filter(n => !n.core).map(n => `<label class="field">${n.label}${n.unit?`(${n.unit})`:""}
+            ${NUTRIENTS.filter(n => !n.core).map(n => `<label class="field">${n.label} (${n.unit})
               <input class="inputEl" type="number" placeholder="0" value="${state.form[n.key]}" oninput="updateForm('${n.key}', this.value)">
             </label>`).join("")}
           </div>` : ""}
@@ -504,17 +398,17 @@ function render() {
 
       <div style="margin-top:22px;">
         <div class="oswald" style="font-size:15px;font-weight:700;margin-bottom:8px;letter-spacing:.02em;">TODAY'S ENTRIES</div>
-        ${state.entries.length===0 ? `<div style="font-size:13px;color:#888;font-style:italic;padding:8px 0;">Nothing logged yet — add your first item above.</div>` : ""}
-        ${grouped.filter(g=>g.items.length).map(g => `
+        ${state.entries.length === 0 ? `<div style="font-size:13px;color:#888;font-style:italic;padding:8px 0;">Nothing logged yet — add your first item above.</div>` : ""}
+        ${grouped.filter(g => g.items.length).map(g => `
           <div style="margin-bottom:14px;">
             <div class="mono" style="font-size:11px;color:var(--green);font-weight:600;margin-bottom:4px;">${g.meal.toUpperCase()}</div>
             ${g.items.map(item => `
               <div class="food-row">
                 <div>
                   <div style="font-size:14px;">${esc(item.name)}</div>
-                  <div class="mono" style="font-size:11px;color:#888;">${Math.round(item.calories) \vert{}\vert{} 0} kJ &middot; P${item.protein || 0}g &middot; C ${item.totalCarb \vert{}\vert{} 0}g &middot; F${item.totalFat || 0}g</div>
+                  <div class="mono" style="font-size:11px;color:#888;">${Math.round(Number(item.calories) || 0)} kJ &middot; P ${item.protein || 0}g &middot; C ${item.totalCarb || 0}g &middot; F ${item.totalFat || 0}g</div>
                 </div>
-                <button class="trash" onclick="removeEntry(${item.id})">&#128465;</button>
+                <button class="trash" onclick="removeEntry('${item.id}')">&#128465;</button>
               </div>`).join("")}
           </div>`).join("")}
       </div>
@@ -527,16 +421,16 @@ function render() {
               <input class="inputEl" type="number" placeholder="0" value="${state.bodyForm[m.key]}" oninput="updateBodyForm('${m.key}', this.value)">
             </label>`).join("")}
           </div>
-          <button class="primaryBtn" onclick="saveBodyStat()">${state.bodySaving ? "Saving…" : `Save stats for ${prettyDate(state.day)}`}</button>
+          <button class="primaryBtn" onclick="saveBodyStat()">Save stats for ${prettyDate(state.day)}</button>
         </div>
-        ${weightPoints.length>1 ? `
+        ${weightPoints.length > 1 ? `
           <div style="margin-top:10px;">
             <div class="mono" style="font-size:11px;color:#888;margin-bottom:4px;">WEIGHT TREND (kg)</div>
             <div class="bar-chart">
               ${weightPoints.map(e => `
                 <div class="bar-col">
                   <div class="mono" style="font-size:9px;color:var(--ink);margin-bottom:2px;">${e.weight}</div>
-                  <div style="width:60%;background:${e.date===state.day?"var(--green)":"#c9c4b4"};height:${Math.max(6,((e.weight-minW)/wRange)*100)}%;"></div>
+                  <div style="width:60%;background:${e.date === state.day ? "var(--green)" : "#c9c4b4"};height:${Math.max(6, ((e.weight - minW) / wRange) * 60)}px;"></div>
                   <div class="mono" style="font-size:9px;color:#888;margin-top:3px;">${e.date.slice(5)}</div>
                 </div>`).join("")}
             </div>
@@ -550,43 +444,31 @@ function render() {
       </div>
 
       <div class="panel workout-card">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:8px;">
-          <span class="oswald" style="font-size:18px;font-weight:700;">${todaysWorkout.type.toUpperCase()}:${todaysWorkout.focus}</span>
-          <span class="mono" style="font-size:12px;background:var(--paper);padding:2px 6px;border-radius:4px;">⏱ ${todaysWorkout.duration}</span>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:8px;">
+          <span class="oswald" style="font-size:18px;font-weight:700;">${todaysWorkout.type.toUpperCase()}: ${todaysWorkout.focus}</span>
+          <span class="mono" style="font-size:12px;background:var(--paper);padding:2px 6px;border-radius:4px;white-space:nowrap;">⏱ ${todaysWorkout.duration}</span>
         </div>
-        
         ${todaysWorkout.exercises ? `
           <div style="margin-top:10px;">
-            <div class="mono" style="font-size:11px;color:#888;margin-bottom:6px;">EXERCISE / LOG WEIGHT & REPS</div>
-            ${todaysWorkout.exercises.map(ex => {
-              const wData = state.workouts[ex.id] || { weight: "", reps: "" };
-              return `
+            <div class="mono" style="font-size:11px;color:#888;margin-bottom:6px;">EXERCISE / SET & REP RANGE</div>
+            ${todaysWorkout.exercises.map(ex => `
               <div class="exercise-item">
-                <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px;">
-                  <span><strong>${ex.name}</strong></span>
-                  <span class="mono" style="color:var(--green);">${ex.sets} ·${ex.reps}</span>
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <input class="inputEl" style="margin-top:0;" type="number" placeholder="Weight (kg)" value="${wData.weight}" oninput="updateWorkout('${ex.id}', 'weight', this.value)">
-                  <input class="inputEl" style="margin-top:0;" type="text" placeholder="Reps (e.g. 8,8,7)" value="${wData.reps}" oninput="updateWorkout('${ex.id}', 'reps', this.value)">
-                </div>
-              </div>`;
-            }).join("")}
+                <span><strong>${ex.name}</strong></span>
+                <span class="mono" style="color:var(--green);white-space:nowrap;">${ex.sets} · ${ex.reps}</span>
+              </div>`).join("")}
           </div>` : `
-          <div style="font-size:13.5px;color:var(--ink);padding:8px 0;line-height:1.5;">
-            ${todaysWorkout.description}
-          </div>`}
+          <div style="font-size:13.5px;padding:8px 0;line-height:1.5;">${todaysWorkout.description}</div>`}
       </div>
 
       <div style="margin-top:22px;">
         <div class="oswald" style="font-size:15px;font-weight:700;margin-bottom:8px;">Full 7-Day Split Overview</div>
         ${TRAINING_SPLIT.map((s, idx) => `
-          <div class="panel" style="margin-bottom:6px; opacity:${Math.floor(dayIndex)%7 === idx ? '1' : '0.7'}; border-left:3px solid ${Math.floor(dayIndex)%7 === idx ? 'var(--green)' : 'var(--border)'}">
+          <div class="panel" style="margin-bottom:6px;opacity:${wIdx === idx ? '1' : '0.7'};border-left:3px solid ${wIdx === idx ? 'var(--green)' : 'var(--border)'}">
             <div style="display:flex;justify-content:space-between;font-size:13px;">
               <strong class="oswald">${s.dayName} (${s.type})</strong>
               <span class="mono" style="font-size:11px;color:#888;">${s.duration}</span>
             </div>
-            <div style="font-size:12px;color:#666;margin-top:2px;">${s.focus}</div>
+            <div style="font-size:12px;color:#888;margin-top:2px;">${s.focus}</div>
           </div>`).join("")}
       </div>
 
@@ -602,7 +484,7 @@ function render() {
           return `<label style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:14.5px;font-weight:600;">
             <input type="checkbox" ${checked ? "checked" : ""} onchange="toggleHabit('${habit.id}')">
             <span style="${checked ? 'text-decoration:line-through;color:#888;' : ''}">${habit.label}</span>
-            ${checked ? `<span style="margin-left:auto;font-size:11px;color:var(--green);font-family:'IBM Plex Mono';">COMPLETED</span>` : ""}
+            ${checked ? `<span class="mono" style="margin-left:auto;font-size:11px;color:var(--green);">COMPLETED</span>` : ""}
           </label>`;
         }).join("")}
       </div>
@@ -610,28 +492,15 @@ function render() {
   `;
 }
 
-function updateForm(key, val) { state.form[key] = val; }
-function updateGoalDraft(key, val) { state.goalDraft[key] = val; }
-function updateBodyForm(key, val) { state.bodyForm[key] = val; }
-function toggleShowMore() { state.showMore = !state.showMore; render(); }
-function toggleGoalsPanel() { state.showGoals = !state.showGoals; render(); }
+/* Expose handlers for inline onclick/oninput attributes */
+Object.assign(window, {
+  changeDay, setTab, addEntry, removeEntry, toggleSupplement, toggleHabit,
+  saveGoals, saveBodyStat, updateForm, updateGoalDraft, updateBodyForm,
+  toggleShowMore, toggleGoalsPanel
+});
 
-window.changeDay = changeDay;
-window.setTab = setTab;
-window.addEntry = addEntry;
-window.removeEntry = removeEntry;
-window.toggleSupplement = toggleSupplement;
-window.toggleHabit = toggleHabit;
-window.updateWorkout = updateWorkout;
-window.saveGoals = saveGoals;
-window.saveBodyStat = saveBodyStat;
-window.updateForm = updateForm;
-window.updateGoalDraft = updateGoalDraft;
-window.updateBodyForm = updateBodyForm;
-window.toggleShowMore = toggleShowMore;
-window.toggleGoalsPanel = toggleGoalsPanel;
-
-loadAll();
+loadDay();
+render();
 </script>
 </body>
 </html>
